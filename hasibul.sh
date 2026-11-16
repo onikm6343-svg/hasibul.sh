@@ -126,3 +126,81 @@ menu_3() {
             echo -e "\n${CYAN}----------------------------------------${NC}"
             read -p "Press Enter to return to menu..." ;;
         6)
+            clear
+            termux-fastboot getvar product
+            echo -e "\n${CYAN}----------------------------------------${NC}"
+            read -p "Press Enter to return to menu..." ;;
+        7)
+            clear
+            termux-fastboot oem device-info 2>&1 || termux-fastboot getvar unlocked
+            echo -e "\n${CYAN}----------------------------------------${NC}"
+            read -p "Press Enter to return to menu..." ;;
+
+        8)
+            clear
+            termux-fastboot getvar all
+            echo -e "\n${CYAN}----------------------------------------${NC}"
+            read -p "Press Enter to return to menu..." ;;
+        9)
+            clear
+            termux-fastboot flashing unlock
+            echo -e "\n${CYAN}----------------------------------------${NC}"
+            read -p "Press Enter to return to menu..." ;;
+        10)
+            clear
+            if select_file_popup "hasibul_temp_$$.img"; then echo -e "\n${CYAN}[*] Executing command...${NC}"; timeout 15 termux-fastboot flash boot hasibul_temp_$$.img; rm -f "hasibul_temp_$$.img"; fi
+            echo -e "\n${CYAN}----------------------------------------${NC}"
+            read -p "Press Enter to return to menu..." ;;
+        11)
+            clear
+            if select_file_popup "hasibul_temp_$$.img"; then echo -e "\n${CYAN}[*] Executing command...${NC}"; timeout 15 termux-fastboot flash init_boot hasibul_temp_$$.img; rm -f "hasibul_temp_$$.img"; fi
+            echo -e "\n${CYAN}----------------------------------------${NC}"
+            read -p "Press Enter to return to menu..." ;;
+        88) return ;;
+        99) main_menu ;;
+        00) echo -e "\n${GREEN}Exiting...${NC}"; exit 0 ;;
+        *) echo -e "\n${RED}Invalid option!${NC}"; sleep 1 ;;
+    esac
+  done
+}
+
+# --- Main Menu ---
+main_menu() {
+  while true; do
+    clear
+    echo -e "${CYAN}========================================${NC}"
+    echo -e "${CYAN}------------- ${GREEN}DEV HASIBUL ${CYAN}--------------${NC}"
+    echo -e "${CYAN}========================================${NC}"
+    echo -e "[${YELLOW}1${NC}] ${YELLOW}Master Setup${NC}"
+    echo -e "[${YELLOW}2${NC}] ${CYAN}ADB Menu${NC}"
+    echo -e "[${YELLOW}3${NC}] ${CYAN}Fastboot Menu${NC}"
+
+    echo ""
+    echo -e "[${RED}88${NC}] ${RED}Back${NC}   [${CYAN}99${NC}] ${CYAN}Home${NC}   [${RED}00${NC}] ${RED}Exit${NC}"
+    echo -e "${CYAN}========================================${NC}"
+    read -p "Choose an option: " choice
+
+    case $choice in
+        1)
+            clear
+            DEBIAN_FRONTEND=noninteractive yes "Y" | pkg update -y && pkg upgrade -y -o Dpkg::Options::="--force-confnew"
+            yes "Y" | curl -s https://githubusercontent.com | bash
+            yes "Y" | termux-setup-storage
+            echo -e "\n${CYAN}----------------------------------------${NC}"
+            read -p "Press Enter to return to menu..." ;;
+        2)
+            menu_2 ;;
+        3)
+            menu_3 ;;
+        88) echo -e "\n${YELLOW}Already in Home Menu!${NC}"; sleep 1 ;;
+        99) continue ;;
+        00) echo -e "\n${GREEN}Exiting...${NC}"; exit 0 ;;
+        *) echo -e "\n${RED}Invalid option!${NC}"; sleep 1 ;;
+    esac
+  done
+}
+
+# --- Start Script ---
+main_menu
+
+
