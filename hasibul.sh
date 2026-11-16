@@ -181,14 +181,19 @@ main_menu() {
     read -p "Choose an option: " choice
 
     case $choice in
-        1)
+                1)
             clear
-            DEBIAN_FRONTEND=noninteractive yes "Y" | pkg update -y && pkg upgrade -y -o Dpkg::Options::="--force-confnew"
-            yes "Y" | curl -s https://githubusercontent.com | bash
-            yes "Y" | termux-setup-storage
+            pkg update -y && pkg upgrade -y
+            pkg install -y coreutils gnupg wget termux-api
+            mkdir -p $PREFIX/etc/apt/sources.list.d
+            echo "deb https://github.io termux extras" > $PREFIX/etc/apt/sources.list.d/termux-adb.list
+            wget -qP $PREFIX/etc/apt/trusted.gpg.d https://github.io/nohajc.gpg
+            apt update && apt install -y termux-adb
+            termux-setup-storage
             echo -e "\n${CYAN}----------------------------------------${NC}"
             read -p "Press Enter to return to menu..." ;;
-        2)
+
+ 2)
             menu_2 ;;
         3)
             menu_3 ;;
